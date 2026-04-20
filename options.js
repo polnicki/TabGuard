@@ -35,6 +35,10 @@ function setupEventListeners() {
     });
   });
 
+  document.getElementById('addBtn').addEventListener('click', function() {
+    addDomain();
+  });
+
   document.getElementById('domainInput').addEventListener('keypress', function(e) {
     if (e.key === 'Enter') {
       addDomain();
