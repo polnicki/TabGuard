@@ -52,6 +52,24 @@
   },
   "accessSettings": {
     "message": "Right-click the TabGuard icon in your extensions menu and click 'Options'"
+  },
+  "cancelTimeoutLabel": {
+    "message": "Cancel timeout (seconds)"
+  },
+  "cancelTimeoutDesc": {
+    "message": "Time before a duplicate tab is automatically closed. You can cancel during this window."
+  },
+  "cancelTimeoutUnit": {
+    "message": "s"
+  },
+  "notificationTitle": {
+    "message": "TabGuard"
+  },
+  "notificationMessage": {
+    "message": "Closing duplicate tab..."
+  },
+  "notificationCancel": {
+    "message": "✋ Cancel closing"
   }
 }
 

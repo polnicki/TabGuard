@@ -11,6 +11,9 @@ function loadLocalizationStrings() {
   document.getElementById('settingsHeader').textContent = chrome.i18n.getMessage('settingsHeader');
   document.getElementById('infoText').textContent = chrome.i18n.getMessage('infoText');
   document.getElementById('enablePluginLabel').textContent = chrome.i18n.getMessage('enablePlugin');
+  document.getElementById('cancelTimeoutLabel').textContent = chrome.i18n.getMessage('cancelTimeoutLabel');
+  document.getElementById('cancelTimeoutDesc').textContent = chrome.i18n.getMessage('cancelTimeoutDesc');
+  document.getElementById('cancelTimeoutUnit').textContent = chrome.i18n.getMessage('cancelTimeoutUnit');
   document.getElementById('excludedDomainsLabel').textContent = chrome.i18n.getMessage('excludedDomains');
   document.getElementById('excludedDomainsDesc').textContent = chrome.i18n.getMessage('excludedDomainsDescription');
   document.getElementById('domainInput').placeholder = chrome.i18n.getMessage('addDomainPlaceholder');
@@ -20,8 +23,9 @@ function loadLocalizationStrings() {
 
 // Load settings from storage
 function loadSettings() {
-  chrome.storage.sync.get({enabled: true, excludedDomains: []}, function(settings) {
+  chrome.storage.sync.get({ enabled: true, excludedDomains: [], cancelTimeout: 3 }, function(settings) {
     document.getElementById('enabledToggle').checked = settings.enabled;
+    document.getElementById('cancelTimeoutInput').value = settings.cancelTimeout;
     updateExcludedList(settings.excludedDomains);
   });
 }
@@ -30,7 +34,17 @@ function loadSettings() {
 function setupEventListeners() {
   document.getElementById('enabledToggle').addEventListener('change', function() {
     const enabled = this.checked;
-    chrome.storage.sync.set({enabled: enabled}, function() {
+    chrome.storage.sync.set({ enabled: enabled }, function() {
+      showStatus(chrome.i18n.getMessage('settingsSaved'), 'success');
+    });
+  });
+
+  document.getElementById('cancelTimeoutInput').addEventListener('change', function() {
+    let val = parseInt(this.value, 10);
+    if (isNaN(val) || val < 1) val = 1;
+    if (val > 30) val = 30;
+    this.value = val;
+    chrome.storage.sync.set({ cancelTimeout: val }, function() {
       showStatus(chrome.i18n.getMessage('settingsSaved'), 'success');
     });
   });
@@ -140,4 +154,3 @@ function showStatus(message, type) {
     statusDiv.classList.remove('show');
   }, 3000);
 }
-

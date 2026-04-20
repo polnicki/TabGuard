@@ -6,8 +6,10 @@
   "description": "__MSG_appDescription__",
   "permissions": [
     "tabs",
-    "storage"
+    "storage",
+    "scripting"
   ],
+  "host_permissions": ["<all_urls>"],
   "background": {
     "service_worker": "background.js"
   },

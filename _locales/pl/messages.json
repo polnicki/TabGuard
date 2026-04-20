@@ -52,6 +52,24 @@
   },
   "accessSettings": {
     "message": "Kliknij prawym przyciskiem na ikonę TabGuard w menu rozszerzeń i kliknij 'Opcje'"
+  },
+  "cancelTimeoutLabel": {
+    "message": "Czas na anulowanie (sekundy)"
+  },
+  "cancelTimeoutDesc": {
+    "message": "Czas przed automatycznym zamknięciem duplikatu karty. Możesz anulować w tym czasie."
+  },
+  "cancelTimeoutUnit": {
+    "message": "s"
+  },
+  "notificationTitle": {
+    "message": "TabGuard"
+  },
+  "notificationMessage": {
+    "message": "Zamykanie duplikatu karty..."
+  },
+  "notificationCancel": {
+    "message": "✋ Anuluj zamknięcie"
   }
 }
 

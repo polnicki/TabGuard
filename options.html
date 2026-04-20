@@ -237,6 +237,30 @@
       color: #004085;
       margin-bottom: 20px;
     }
+
+    .setting-desc {
+      color: #666;
+      font-size: 13px;
+      margin-top: 8px;
+      line-height: 1.4;
+    }
+
+    .timeout-control {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .timeout-control input {
+      -moz-appearance: textfield;
+      appearance: textfield;
+    }
+
+    .timeout-control input::-webkit-outer-spin-button,
+    .timeout-control input::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
   </style>
 </head>
 <body>
@@ -255,6 +279,17 @@
           <span class="slider"></span>
         </label>
       </div>
+    </div>
+
+    <div class="setting-group">
+      <div class="toggle-container">
+        <label class="toggle-label" id="cancelTimeoutLabel">Cancel timeout (seconds)</label>
+        <div class="timeout-control">
+          <input type="number" id="cancelTimeoutInput" min="1" max="30" value="3" style="width:65px; text-align:center; padding:6px 8px; font-size:15px; font-weight:600;" />
+          <span class="timeout-unit" id="cancelTimeoutUnit">s</span>
+        </div>
+      </div>
+      <p class="setting-desc" id="cancelTimeoutDesc">Time before a duplicate tab is automatically closed. You can cancel during this window.</p>
     </div>
 
     <div class="setting-group exclude-section">
