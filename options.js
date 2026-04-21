@@ -70,20 +70,25 @@ function addDomain() {
     return;
   }
 
-  // Validate domain format
-  if (!isValidDomain(domain)) {
-    showStatus(chrome.i18n.getMessage('invalidDomain'), 'error');
-    return;
-  }
-
   // Get existing list from storage
   chrome.storage.sync.get({excludedDomains: []}, function(settings) {
     let domains = settings.excludedDomains;
 
-    // Check if domain already exists
+    // Check if domain already exists (exact match)
     if (domains.includes(domain)) {
       showStatus(chrome.i18n.getMessage('domainExists'), 'error');
       return;
+    }
+
+    // Check for conflicts: normalize patterns to detect duplicates
+    // e.g., "hrs*com", "*hrs.com", "hrs.com" all normalize to "hrscom"
+    const normalized = domain.replace(/\*/g, '').replace(/\./g, '');
+    for (const existing of domains) {
+      const existingNormalized = existing.replace(/\*/g, '').replace(/\./g, '');
+      if (normalized === existingNormalized) {
+        showStatus(chrome.i18n.getMessage('domainExists'), 'error');
+        return;
+      }
     }
 
     // Add new domain
@@ -137,12 +142,6 @@ function updateExcludedList(domains) {
   });
 }
 
-// Validate domain format
-function isValidDomain(domain) {
-  // Allow: example.com, *.example.com, sub.example.com
-  const regex = /^(\*\.)?[a-z0-9]([a-z0-9-]*\.)*[a-z0-9-]*\.[a-z]{2,}$/i;
-  return regex.test(domain);
-}
 
 // Show status message
 function showStatus(message, type) {

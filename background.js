@@ -123,6 +123,27 @@ function removeToast(tabId) {
   }).catch(() => {});
 }
 
+// Briefly highlight both duplicate tabs in the tab strip.
+function highlightDuplicateTabs(windowId, sourceIndex, duplicateIndex, sourceTabId) {
+  if (typeof sourceIndex !== 'number' || typeof duplicateIndex !== 'number') {
+    return;
+  }
+
+  chrome.tabs.highlight(
+    { windowId, tabs: [sourceIndex, duplicateIndex] },
+    function () {
+      if (chrome.runtime.lastError) {
+        return;
+      }
+
+      // Return to the source tab so the user sees the warning toast there.
+      setTimeout(() => {
+        chrome.tabs.update(sourceTabId, { active: true }, () => {});
+      }, 1200);
+    }
+  );
+}
+
 // Show toast in tab and schedule close after N seconds
 function scheduleDuplicateClose(tabId, targetTabId, timeoutSeconds) {
   // First, switch focus to the source tab so user can see the toast
@@ -176,6 +197,7 @@ chrome.tabs.onUpdated.addListener(function (tabId, changeInfo, tab) {
               !isUrlExcluded(t.url, settings.excludedDomains) &&
               t.url.split('#')[0] === tab.url.split('#')[0]
             ) {
+              highlightDuplicateTabs(tab.windowId, t.index, tab.index, t.id);
               scheduleDuplicateClose(tab.id, t.id, settings.cancelTimeout);
               break;
             }
