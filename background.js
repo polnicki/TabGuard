@@ -2,21 +2,21 @@
 const pendingClosures = new Map();
 
 // Check if URL should be excluded from duplicate detection
+// Simple substring matching: excludedDomains are matched against the full URL
+// Wildcards (*) are stripped and treated as substring patterns
 function isUrlExcluded(url, excludedDomains) {
   if (!excludedDomains || excludedDomains.length === 0) return false;
   try {
-    const hostname = new URL(url).hostname.toLowerCase();
+    const urlLower = url.toLowerCase();
     for (const excluded of excludedDomains) {
-      const pattern = excluded.toLowerCase();
-      if (pattern.startsWith('*.')) {
-        const base = pattern.slice(2);
-        if (hostname === base || hostname.endsWith('.' + base)) return true;
-      } else {
-        if (hostname === pattern || hostname.endsWith('.' + pattern)) return true;
+      // Remove wildcards from pattern and check if it's contained in the URL
+      let pattern = excluded.toLowerCase().replace(/^\*\.?|\*$/g, '');
+      if (pattern && urlLower.includes(pattern)) {
+        return true;
       }
     }
   } catch (e) {
-    console.log('TabGuard: Invalid URL:', url);
+    console.log('TabGuard: Error checking excluded URL:', url);
   }
   return false;
 }
