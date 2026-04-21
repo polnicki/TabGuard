@@ -125,20 +125,21 @@ function removeToast(tabId) {
 
 // Show toast in tab and schedule close after N seconds
 function scheduleDuplicateClose(tabId, targetTabId, timeoutSeconds) {
-  // Inject the toast UI into the duplicate tab
-  chrome.scripting.executeScript({
-    target: { tabId },
-    func: injectTabGuardToast,
-    args: [timeoutSeconds]
-  }).catch(err => console.log('TabGuard: Could not inject toast:', err));
+  // First, switch focus to the source tab so user can see the toast
+  chrome.tabs.update(targetTabId, { active: true }, function() {
+    // Inject the toast UI into the SOURCE tab (targetTabId, not the duplicate)
+    chrome.scripting.executeScript({
+      target: { tabId: targetTabId },
+      func: injectTabGuardToast,
+      args: [timeoutSeconds]
+    }).catch(err => console.log('TabGuard: Could not inject toast:', err));
+  });
 
   // Schedule the actual close
   const timeoutId = setTimeout(() => {
     if (pendingClosures.has(tabId)) {
       pendingClosures.delete(tabId);
-      chrome.tabs.remove(tabId, function () {
-        chrome.tabs.update(targetTabId, { active: true });
-      });
+      chrome.tabs.remove(tabId);
     }
   }, timeoutSeconds * 1000);
 
